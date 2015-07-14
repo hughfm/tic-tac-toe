@@ -40,7 +40,7 @@ var game = {
     return colArray;
   },
 
-  getEl : function (row, col) {
+  getSquare : function (row, col) {
     // return specified element, where row and col both start at 1.
     return game.board[row - 1][col - 1];
   },
@@ -84,7 +84,7 @@ var game = {
     var counter = 1;
 
     _.each(game.board, function(row, i) {
-      _.each(row, function(element, j) {
+      _.each(row, function(square, j) {
         game.board[i][j] = counter;
         counter ++;
       }); // each element
@@ -95,12 +95,66 @@ var game = {
     game.board[row - 1][col - 1] = player;
     return player;
   },
+
+  renderBoard : function () {
+    var board = $('<div id="game-board" class="clearfix">');
+
+    _.each(game.board, function(row, rowIndex) {
+      _.each(row, function(square, colIndex) {
+        board.append($('<div>').attr({
+          row: rowIndex + 1,
+          col: colIndex + 1,
+          class: 'square'
+        }).html(game.board[rowIndex][colIndex]));
+      }); //each square
+    }); // each row
+
+    return board;
+  }
 };
 
 
 $( document ).ready(function() {
   // DOM manipulation in here.
-  game.setBoard(5);
+  game.setBoard(3);
   // game.testSetup();
+
+  var gameInterface = {
+    draw : function () {
+      var squareSize = parseInt($('#board-wrapper').css('width'), 10) / game.board.length + 'px';
+      var backgroundColours = ['lightgray', 'darkgray'];
+
+      $('#board-wrapper').html(game.renderBoard);
+
+      $('#game-board').children().css({
+        width: squareSize,
+        height: squareSize,
+        'line-height': squareSize
+      });
+
+      _.each($('.square'), function(square, index) {
+        $( square ).css( 'background-color', backgroundColours[index % 2] );
+      });
+    },
+
+    update : function(row, col) {
+      $('#game-board').children().filter(function() {
+        return $( this ).attr('row') === row && $( this ).attr('col') === col;
+      }).html(game.getSquare(row, col));
+    }
+  };
+
+  gameInterface.draw();
+
+  $('#game-board').on('click', '.square', function() {
+    var row = $( this ).attr('row');
+    var col = $( this ).attr('col');
+
+    console.log(row, col);
+
+    game.setSquare(row, col, 1);
+    gameInterface.update(row, col);
+  });
+
 
 }); // document ready
