@@ -18,12 +18,12 @@ var game = {
     for (var i = 0; i < size; i++) {
       game.board[i] = Array(size);
     }
-  },
+  }, // setBoard
 
   getRow : function(row) {
     // return specified row as an array where rows begin at 1.
     return game.board[row - 1];
-  },
+  }, // getRow
 
   getCol : function (col) {
     // return specified column as an array where columns begin at 1.
@@ -38,12 +38,12 @@ var game = {
     }); // each row
 
     return colArray;
-  },
+  }, // getCol
 
   getSquare : function (row, col) {
     // return specified element, where row and col both start at 1.
     return game.board[row - 1][col - 1];
-  },
+  }, // getSquare
 
   getDiag : function (origin) {
     // return diagonal starting at the top, as an array
@@ -70,7 +70,7 @@ var game = {
     }
 
     return diagArray;
-  },
+  }, // getDiag
 
   testSetup : function () {
     // Set up the board as follows:
@@ -89,12 +89,12 @@ var game = {
         counter ++;
       }); // each element
     }); // each row
-  },
+  }, // testSetup
 
   setSquare : function (row, col, player) {
     game.board[row - 1][col - 1] = player;
     return player;
-  },
+  }, // setSquare
 
   renderBoard : function () {
     var board = $('<div id="game-board" class="clearfix">');
@@ -110,19 +110,19 @@ var game = {
     }); // each row
 
     return board;
-  }
-};
+  } // renderBoard
+}; //game object
 
 
 $( document ).ready(function() {
   // DOM manipulation in here.
-  game.setBoard(3);
-  // game.testSetup();
 
   var gameInterface = {
     draw : function () {
       var squareSize = parseInt($('#board-wrapper').css('width'), 10) / game.board.length + 'px';
       var backgroundColours = ['lightgray', 'darkgray'];
+
+      // console.log(boardWrapper, board);
 
       $('#board-wrapper').html(game.renderBoard);
 
@@ -141,20 +141,29 @@ $( document ).ready(function() {
       $('#game-board').children().filter(function() {
         return $( this ).attr('row') === row && $( this ).attr('col') === col;
       }).html(game.getSquare(row, col));
-    }
+    },
+
+    clickSquare : function(row, col, player) {
+      // console.log(row, col);
+
+      game.setSquare(row, col, 'X');
+      gameInterface.update(row, col);
+    },
+
+    init : function () {
+      game.setBoard(3);
+      // game.testSetup();
+      gameInterface.draw();
+
+      $('#game-board').on('click', '.square', function() {
+          var row = $( this ).attr('row');
+          var col = $( this ).attr('col');
+
+        gameInterface.clickSquare( row, col );
+      });
+    },
   };
 
-  gameInterface.draw();
-
-  $('#game-board').on('click', '.square', function() {
-    var row = $( this ).attr('row');
-    var col = $( this ).attr('col');
-
-    console.log(row, col);
-
-    game.setSquare(row, col, 1);
-    gameInterface.update(row, col);
-  });
-
+  gameInterface.init();
 
 }); // document ready
