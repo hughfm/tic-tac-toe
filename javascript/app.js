@@ -57,7 +57,7 @@ var game = {
   }, // getSquare
 
   squareAvailable : function (row, col) {
-    return !game.getSquare(row, col);
+    return game.getSquare(row, col) === null || game.getSquare(row, col) === undefined;
   }, // squareAvailable
 
   getDiag : function (origin) {

@@ -74,6 +74,7 @@ $( document ).ready(function() {
 
     clickSquare : function(row, col, playerIndex) {
       // console.log(row, col);
+      debugger;
       if (game.squareAvailable(row, col) && game.active) { // check if square is already taken & game is active
         // set and update square
         game.setSquare(row, col, playerIndex);
@@ -119,7 +120,7 @@ $( document ).ready(function() {
 
     load : function () {
       if (!window.localStorage.getItem('board')) {
-        gameInterface.init(3, ['O', 'X']); // initialize first game
+        gameInterface.init(4, ['C', 'H', 'X']); // initialize first game
       } else {
         game.loadLocal();
         gameInterface.draw();
