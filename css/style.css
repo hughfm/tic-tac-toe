@@ -38,6 +38,7 @@ html {
 
 .info-panel > div {
   display: inline-block;
+  margin-left: 10px;
 }
 
 #players {
@@ -52,7 +53,7 @@ html {
 }
 
 #board-wrapper {
-  max-width: 640px;
+  max-width: 50%;
   margin: auto;
 }
 

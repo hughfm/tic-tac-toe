@@ -173,19 +173,34 @@ $( document ).ready(function() {
           $( square ).css( 'background-color', backgroundColours[index % 2] );
         }); // each square on odd numbered rows
       }
+
+      // update players list
+      var playersList = $('<ul>');
+      _.each(game.players, function(player) {
+        playersList.append($('<li>').html(player));
+      });
+      $('#players').html(playersList.html());
+
+      gameInterface.updateTurn();
     },
 
-    update : function(row, col) {
+    updateSquare : function(row, col) {
       $('#game-board').children().filter(function() {
         return $( this ).attr('row') === row && $( this ).attr('col') === col;
       }).html(game.getSquare(row, col));
+    },
+
+    updateTurn : function() {
+      // update current turn
+      $('#players li').css('background-color', '');
+      $('#players li').eq(game.turn).css('background-color', 'lightblue');
     },
 
     clickSquare : function(row, col, player) {
       // console.log(row, col);
       if (game.squareAvailable(row, col)) {
         game.setSquare(row, col, player);
-        gameInterface.update(row, col);
+        gameInterface.updateSquare(row, col);
         return true;
       }
       return false;
@@ -206,12 +221,13 @@ $( document ).ready(function() {
 
         if (gameInterface.clickSquare(row, col, game.players[game.turn])) {
           game.nextPlayer();
+          gameInterface.updateTurn();
         }
       });
     }
 
   };
 
-  gameInterface.init(5, ['o', 'x', 'z']);
+  gameInterface.init(3, ['o', 'x']);
 
 }); // document ready
