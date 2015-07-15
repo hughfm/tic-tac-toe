@@ -12,6 +12,7 @@ var game = {
   board : [],
   players : [],
   turn : 0,
+  active : false,
 
   nextPlayer : function () {
     if (game.turn >= game.players.length - 1) {
@@ -134,7 +135,45 @@ var game = {
       }
     }
     return true;
-  } // checkWin
+  }, // checkWin
+
+  checkAllWins : function (row, col) {
+    var winLine = [];
+
+    if ( game.checkWin(game.getRow(row)) ) {
+      for (var i = 0; i < game.board.length; i++) {
+        winLine.push([row, i + 1]);
+      }
+      return winLine;
+    }
+
+    if ( game.checkWin(game.getCol(col)) ) {
+      for (var i = 0; i < game.board.length; i++) {
+        winLine.push([i + 1, col]);
+      }
+      return winLine;
+    }
+
+    if (row === col) {
+      if ( game.checkWin(game.getDiag('right')) ) {
+        for (var i = 0; i < game.board.length; i++) {
+          winLine.push([i + 1, i + 1]);
+        }
+        return winLine;
+      }
+    }
+
+    if (row + col === game.board.length + 1) {
+      if ( game.checkWin(game.getDiag('left')) ) {
+        for (var i = 0; i < game.board.length; i++) {
+          winLine.push([i + 1, game.board.length - i]);
+        }
+        return winLine;
+      }
+    }
+
+    return false;
+  } // checkAllWins
 }; //game object
 
 
@@ -186,24 +225,47 @@ $( document ).ready(function() {
 
     updateSquare : function(row, col) {
       $('#game-board').children().filter(function() {
-        return $( this ).attr('row') === row && $( this ).attr('col') === col;
+        return parseInt($( this ).attr('row'), 10) === row && parseInt($( this ).attr('col'), 10) === col;
       }).html(game.getSquare(row, col));
     },
 
     updateTurn : function() {
       // update current turn
-      $('#players li').css('background-color', '');
-      $('#players li').eq(game.turn).css('background-color', 'lightblue');
+      $('#players li').css( {
+        'background-color': '',
+        color: 'white'
+      } );
+
+      $('#players li').eq(game.turn).css( {
+        'background-color': 'lightblue',
+        color: 'black'
+      } );
     },
 
     clickSquare : function(row, col, player) {
       // console.log(row, col);
-      if (game.squareAvailable(row, col)) {
+      if (game.squareAvailable(row, col) && game.active) { // check if square is already taken & game is active
+        // set and update square
         game.setSquare(row, col, player);
         gameInterface.updateSquare(row, col);
-        return true;
+
+        var winStatus = game.checkAllWins(row, col);
+        if (winStatus) { // check if player has won
+          game.active = false;
+          _.each(winStatus, function(square) {
+            $('.square[row="' + square[0] + '"][col="' + square[1] + '"]').css( {
+              'background-color': 'gold',
+              color: 'white'
+            } );
+          });
+          return;
+        }
+
+        // move on to next player
+        game.nextPlayer();
+        gameInterface.updateTurn();
       }
-      return false;
+
     },
 
     init : function (size, players) {
@@ -216,18 +278,24 @@ $( document ).ready(function() {
 
       $('#game-board').on('click', '.square', function() {
         // function to take a turn by clicking on a square
-        var row = $( this ).attr('row');
-        var col = $( this ).attr('col');
+        var row = parseInt($( this ).attr('row'), 10);
+        var col = parseInt($( this ).attr('col'), 10);
 
-        if (gameInterface.clickSquare(row, col, game.players[game.turn])) {
-          game.nextPlayer();
-          gameInterface.updateTurn();
-        }
+        gameInterface.clickSquare(row, col, game.players[game.turn]);
       });
+
+      game.active = true; // start the game!
     }
 
   };
 
-  gameInterface.init(3, ['o', 'x']);
+  gameInterface.init(5, ['o', 'x']);
+
+  // $('.square').filter(function(){
+  //   var row = parseInt($(this).attr('row'), 10);
+  //   var col = parseInt($(this).attr('col'), 10);
+  //
+  //   return (row === col) || (row + col === game.board.length + 1);
+  // }).css('background-color', 'gold');
 
 }); // document ready
