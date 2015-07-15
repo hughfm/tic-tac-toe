@@ -28,6 +28,12 @@ html {
   padding: 20px 0 0 0;
 }
 
+#game-setup {
+  display: none;
+  background-color: pink;
+  height: 400px;
+}
+
 .info-panel {
   background-color: navy;
   /*height: 50px;*/
@@ -36,16 +42,16 @@ html {
   margin: 20px 0;
 }
 
-.info-panel > div {
+.info-panel > * {
   display: inline-block;
   margin-left: 10px;
 }
 
-#players {
+.info-panel ul {
   padding: 0;
 }
 
-#players li {
+.info-panel li {
   list-style-type: none;
   display: inline;
   margin: 10px;
@@ -67,4 +73,13 @@ html {
   background-color: lightgray;
   font-size: 3em;
   font-weight: bold;
+}
+
+#controls li:hover {
+  cursor: pointer;
+  background-color: lightgray;
+}
+
+#controls li {
+  background-color: gray;
 }
