@@ -10,6 +10,16 @@ var game = {
   // game.board[i][j] returns the element in the jth column of the ith row
 
   board : [],
+  players : [],
+  turn : 0,
+
+  nextPlayer : function () {
+    if (game.turn >= game.players.length - 1) {
+      game.turn = 0;
+    } else {
+      game.turn ++;
+    }
+  },
 
   setBoard : function (size) {
     // creates empty board of specified size
@@ -44,6 +54,10 @@ var game = {
     // return specified element, where row and col both start at 1.
     return game.board[row - 1][col - 1];
   }, // getSquare
+
+  squareAvailable : function (row, col) {
+    return !game.getSquare(row, col);
+  }, // squareAvailable
 
   getDiag : function (origin) {
     // return diagonal starting at the top, as an array
@@ -110,7 +124,17 @@ var game = {
     }); // each row
 
     return board;
-  } // renderBoard
+  }, // renderBoard
+
+  checkWin : function (line) {
+    // take any line of squares and return the player, if a win, or false if no win
+    for (var i = 1; i < line.length; i++) {
+      if (line[i] !== line[0] || !line[i]) {
+        return false;
+      }
+    }
+    return true;
+  } // checkWin
 }; //game object
 
 
@@ -132,9 +156,23 @@ $( document ).ready(function() {
         'line-height': squareSize
       });
 
-      _.each($('.square'), function(square, index) {
-        $( square ).css( 'background-color', backgroundColours[index % 2] );
-      });
+      if (game.board.length % 2 !== 0) {
+        _.each($('.square'), function(square, index) {
+          $( square ).css( 'background-color', backgroundColours[index % 2] );
+        });
+      } else {
+        _.each($('.square').filter(function () {
+          return $( this ).attr('row') % 2 === 0;
+        }), function (square, index) {
+          $( square ).css( 'background-color', backgroundColours.slice().reverse()[index % 2] );
+        }); // each square on even numbered rows
+
+        _.each($('.square').filter(function () {
+          return $( this ).attr('row') % 2 !== 0;
+        }), function (square, index) {
+          $( square ).css( 'background-color', backgroundColours[index % 2] );
+        }); // each square on odd numbered rows
+      }
     },
 
     update : function(row, col) {
@@ -145,25 +183,35 @@ $( document ).ready(function() {
 
     clickSquare : function(row, col, player) {
       // console.log(row, col);
-
-      game.setSquare(row, col, 'X');
-      gameInterface.update(row, col);
+      if (game.squareAvailable(row, col)) {
+        game.setSquare(row, col, player);
+        gameInterface.update(row, col);
+        return true;
+      }
+      return false;
     },
 
-    init : function () {
-      game.setBoard(3);
+    init : function (size, players) {
+      game.setBoard(size); // create board
+      game.players = players; // set players array
+      // game.players.push('#');
+      game.turn = 0; // set turn to first player
       // game.testSetup();
-      gameInterface.draw();
+      gameInterface.draw(); // draw board on screen
 
       $('#game-board').on('click', '.square', function() {
-          var row = $( this ).attr('row');
-          var col = $( this ).attr('col');
+        // function to take a turn by clicking on a square
+        var row = $( this ).attr('row');
+        var col = $( this ).attr('col');
 
-        gameInterface.clickSquare( row, col );
+        if (gameInterface.clickSquare(row, col, game.players[game.turn])) {
+          game.nextPlayer();
+        }
       });
-    },
+    }
+
   };
 
-  gameInterface.init();
+  gameInterface.init(5, ['o', 'x', 'z']);
 
 }); // document ready
