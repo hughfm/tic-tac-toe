@@ -10,7 +10,16 @@ var game = {
   // game.board[i][j] returns the element in the jth column of the ith row
 
   board : [],
-  players : [],
+  players : [ {
+    name: "Noughts",
+    email: "hughfmiddleton+noughts@gmail.com",
+    colour: Util.randomRGB()
+  },
+  {
+    name: "Crosses",
+    email: "hughfmiddleton+crosses@gmail.com",
+    colour: Util.randomRGB()
+  } ],
   turn : 0,
   active : false,
 

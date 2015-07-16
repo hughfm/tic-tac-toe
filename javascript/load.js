@@ -38,9 +38,14 @@ $( document ).ready(function() {
     updatePlayerList : function() {
       // create players list
       var playersList = $('<ul>');
+      var playerListItem;
       _.each(game.players, function(player, playerIndex) {
-        playersList.append($('<li>').html(Util.imageTag(playerIndex, 50).addClass('player-list')));
+        playerListItem = $('<li>').html(
+          Util.imageTag(playerIndex, 50)
+        ).addClass('player-list').append($('<p>').html(player.name).addClass('player-name'));
+        playersList.append(playerListItem);
       });
+
       $('#players').html(playersList.html());
 
       gameInterface.updateTurn();
@@ -112,20 +117,33 @@ $( document ).ready(function() {
     },
 
     init : function (size, players) {
+      size = size || 3;
       game.createBoard(size); // create board
-      game.players = players; // set players array
+
+      if (players) {
+        game.players = players; // set players array
+      }
+
       // game.players.push('#');
       game.turn = 0; // set turn to first player
       // game.testSetup();
       gameInterface.draw(); // draw board on screen
 
       gameInterface.bindSquareClick();
+      $('#board-size').val(size);
       game.active = true; // start the game!
     },
 
     load : function () {
+      // populate board size select box
+      _.each([3,4,5,6,7,8,9,10], function(size) {
+        $('#game-setup #board-size').append(
+          $('<option>').val(size).html(size + 'x' + size)
+        );
+      });
+
       if (!window.localStorage.getItem('board')) {
-        gameInterface.init(4, []); // initialize first game
+        gameInterface.init(); // initialize first game
       } else {
         game.loadLocal();
         gameInterface.draw();
@@ -134,37 +152,54 @@ $( document ).ready(function() {
         if (winStatus) {
           gameInterface.updateWinLine(winStatus);
         }
-
+        $('#board-size').val(game.board.length.toString());
         gameInterface.bindSquareClick();
       }
 
       // new game button
-      $('#new-game').on('click', function() {
-        gameInterface.init(3, [ {
-          name: "Hugh",
-          email: "hughfmiddleton@gmail.com",
-          colour: Util.randomRGB()
-        },
-        {
-          name: "Cass",
-          email: "Cass.leigh.singh@gmail.com",
-          colour: Util.randomRGB()
-        } ]);
+      $('#new-game-button').on('click', function() {
+        gameInterface.init(parseInt($('#board-size').val(), 10));
         game.saveLocal();
       });
 
-      // setup button
+      // Setup Button
       $('#setup-button').on('click', function() {
-        $('#board-wrapper').toggle();
-        $('#game-setup').toggle();
-        $(this).html( ($(this).html() === 'Setup') ? 'Play' : 'Setup' );
+        $('#board-wrapper').hide();
+        $('#game-setup').show();
+        $(this).hide();
+        $('#reset-button').hide();
+        $('#new-game-button').hide();
+        $('#play-button').css('display', 'inline-block');
       });
 
-      // populate board size select box
-      _.each([3,4,5,6,7,8,9,10], function(size) {
-        $('#game-setup #board-size').append(
-          $('<option>').val(size).html(size + 'x' + size)
-        );
+      // Play Button
+      $('#play-button').on('click', function() {
+        $('#board-wrapper').show();
+        $('#game-setup').hide();
+        $(this).hide();
+        $('#reset-button').css('display', 'inline-block');
+        $('#new-game-button').css('display', 'inline-block');
+        $('#setup-button').css('display', 'inline-block');
+
+        if (parseInt($('#board-size').val(), 10) !== game.board.length) {
+          gameInterface.init(parseInt($('#board-size').val(), 10));
+          game.saveLocal();
+        }
+
+        gameInterface.draw();
+
+        var winStatus = game.checkBoardForWins();
+        if (winStatus) {
+          gameInterface.updateWinLine(winStatus);
+        }
+
+        gameInterface.bindSquareClick();
+      });
+
+      // Reset Button
+      $('#reset-button').on('click', function() {
+        window.localStorage.clear();
+        gameInterface.init();
       });
 
       // populate player setup area
@@ -178,15 +213,16 @@ $( document ).ready(function() {
       $('#add-player-button').on('click', function() {
         if (game.players.length < 5) {
           game.players.push({
-            name: "",
+            name: "Player",
             email: "",
             colour: Util.randomRGB()
           });
           $('#add-player-button').before(
             Util.playerTag(game.players.length - 1)
           );
-          game.saveLocal();
+          gameInterface.init();
           gameInterface.updatePlayerList();
+          game.saveLocal();
           if (game.players.length >= 5) {
             $(this).attr('disabled', true);
           }
@@ -198,6 +234,7 @@ $( document ).ready(function() {
         var playerIndex = $( this ).parent().attr('data-player-index');
         game.players.splice(playerIndex, 1);
         $(this).parent().remove();
+        gameInterface.init();
         game.saveLocal();
         gameInterface.updatePlayerList();
         if (game.players.length < 5) {
@@ -215,14 +252,16 @@ $( document ).ready(function() {
       });
 
       // Change name event Handler
-      $('#player-setup').on('change', '.player-name', function() {
+      $('#player-setup').on('change', '.player-name-input', function() {
+        console.log(100);
         var playerIndex = $( this ).parent().attr('data-player-index');
         game.players[playerIndex].name = $( this ).val();
         game.saveLocal();
+        gameInterface.updatePlayerList();
       });
 
       // Change email event Handler
-      $('#player-setup').on('change', '.player-email', function() {
+      $('#player-setup').on('change', '.player-email-input', function() {
         var playerIndex = $( this ).parent().attr('data-player-index');
         game.players[playerIndex].email = $( this ).val();
         $(this).parent().replaceWith(Util.playerTag(playerIndex));

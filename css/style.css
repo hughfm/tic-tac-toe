@@ -38,6 +38,10 @@ html {
   padding: 10px;
 }
 
+#play-button {
+  display: none;
+}
+
 .info-panel {
   background-color: maroon;
   color: white;
@@ -61,6 +65,7 @@ html {
   display: inline-block;
   margin: 10px;
   padding: 10px;
+  text-align: center;
 }
 
 #board-wrapper {
@@ -78,7 +83,7 @@ html {
   background-color: lightgray;
   font-size: 3em;
   font-weight: bold;
-  padding: 10%;
+  padding: 5px;
 }
 
 #controls li:hover {
@@ -97,4 +102,8 @@ html {
 .board-piece {
   float: left;
   width: 100%;
+}
+
+.player-name {
+  text-align: center;
 }

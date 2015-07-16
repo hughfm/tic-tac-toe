@@ -5,7 +5,7 @@ var Util = {};
 Util.allEqual = function (line) {
   // take any line of squares and return the player, if a win, or false if no win
   for (var i = 1; i < line.length; i++) {
-    if (line[i] !== line[0] || typeof line[i] === undefined || line[i] === null) {
+    if (line[i] !== line[0] || (typeof line[i]) === "undefined" || line[i] === null) {
       return false;
     }
   }
@@ -61,7 +61,7 @@ Util.playerTag = function(playerIndex) {
     type: "text",
     name: "player-" + playerIndex + "-name",
     id: "player-" + playerIndex + "-name",
-    class: "player-name",
+    class: "player-name-input",
     value: game.players[playerIndex].name
   }));
 
@@ -73,7 +73,7 @@ Util.playerTag = function(playerIndex) {
     type: "text",
     name: "player-" + playerIndex + "-email",
     id: "player-" + playerIndex + "-email",
-    class: "player-email",
+    class: "player-email-input",
     value: game.players[playerIndex].email
   }));
 
