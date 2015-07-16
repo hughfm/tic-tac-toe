@@ -134,6 +134,15 @@ $( document ).ready(function() {
       game.active = true; // start the game!
     },
 
+    addPlayersToSetup : function() {
+      // populate player setup area
+      _.each(game.players, function(player, playerIndex) {
+        $('#game-setup #add-player-button').before(
+          Util.playerTag(playerIndex)
+        );
+      });
+    },
+
     load : function () {
       // populate board size select box
       _.each([3,4,5,6,7,8,9,10], function(size) {
@@ -156,6 +165,8 @@ $( document ).ready(function() {
         gameInterface.bindSquareClick();
       }
 
+      gameInterface.addPlayersToSetup();
+
       // new game button
       $('#new-game-button').on('click', function() {
         gameInterface.init(parseInt($('#board-size').val(), 10));
@@ -174,6 +185,11 @@ $( document ).ready(function() {
 
       // Play Button
       $('#play-button').on('click', function() {
+        if (game.players.length === 0) {
+          alert("You don't have any players!");
+          return;
+        }
+
         $('#board-wrapper').show();
         $('#game-setup').hide();
         $(this).hide();
@@ -199,14 +215,9 @@ $( document ).ready(function() {
       // Reset Button
       $('#reset-button').on('click', function() {
         window.localStorage.clear();
-        gameInterface.init();
-      });
-
-      // populate player setup area
-      _.each(game.players, function(player, playerIndex) {
-        $('#add-player-button').before(
-          Util.playerTag(playerIndex)
-        );
+        gameInterface.init(null, game.defaultPlayers);
+        $('#player-setup .player').remove();
+        gameInterface.addPlayersToSetup();
       });
 
       // Add Player Event Handler
@@ -220,7 +231,7 @@ $( document ).ready(function() {
           $('#add-player-button').before(
             Util.playerTag(game.players.length - 1)
           );
-          gameInterface.init();
+          gameInterface.init(parseInt($('#board-size').val(), 10));
           gameInterface.updatePlayerList();
           game.saveLocal();
           if (game.players.length >= 5) {
@@ -234,7 +245,7 @@ $( document ).ready(function() {
         var playerIndex = $( this ).parent().attr('data-player-index');
         game.players.splice(playerIndex, 1);
         $(this).parent().remove();
-        gameInterface.init();
+        gameInterface.init(parseInt($('#board-size').val(), 10));
         game.saveLocal();
         gameInterface.updatePlayerList();
         if (game.players.length < 5) {

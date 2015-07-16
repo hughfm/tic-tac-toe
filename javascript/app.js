@@ -22,6 +22,16 @@ var game = {
   } ],
   turn : 0,
   active : false,
+  defaultPlayers : [ {
+    name: "Noughts",
+    email: "hughfmiddleton+noughts@gmail.com",
+    colour: Util.randomRGB()
+  },
+  {
+    name: "Crosses",
+    email: "hughfmiddleton+crosses@gmail.com",
+    colour: Util.randomRGB()
+  } ],
 
   nextPlayer : function () {
     if (game.turn >= game.players.length - 1) {

@@ -1,0 +1,72 @@
+/* Setup Panel Styles */
+
+button {
+  font-family: 'Montserrat', sans-serif;
+}
+
+#game-setup {
+  display: none;
+  background-color: lightgray;
+  border: 10px solid linen;
+  padding: 10px;
+}
+
+#play-button {
+  display: none;
+}
+
+#player-setup {
+  margin: 30px 0;
+}
+
+#player-setup .player {
+  border: 1px solid black;
+  border-bottom: none;
+  padding: 10px;
+}
+
+#player-setup .player:last-of-type {
+  border-bottom: 1px solid black;
+}
+
+#player-setup .player * {
+  vertical-align: top;
+}
+
+#player-setup .player button {
+  display: block;
+  clear: left;
+  margin: 10px 0;
+  font-size: 1em;
+}
+
+#player-setup input {
+  padding: 5px;
+  font-size: 1em;
+}
+
+#player-setup .player img {
+  float: left;
+  margin: 0 20px 20px 0;
+}
+
+#player-setup .player-email-input {
+  width: 25em;
+}
+
+#player-setup .input-area {
+  margin-bottom: 20px;
+}
+
+#player-setup label {
+  margin-right: 10px;
+}
+
+#add-player-button {
+  margin-top: 20px;
+  font-size: 1em;
+}
+
+#board-size {
+  font-size: 1em;
+}

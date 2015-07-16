@@ -1,0 +1,24 @@
+/* Game Panel Styles */
+
+#board-wrapper {
+  max-width: 50%;
+  margin: 50px auto;
+}
+
+#game-board {
+  margin: 0 auto;
+}
+
+.square {
+  float:left;
+  text-align: center;
+  background-color: lightgray;
+  font-size: 3em;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.board-piece {
+  float: left;
+  width: 100%;
+}

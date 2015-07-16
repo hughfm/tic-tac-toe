@@ -49,15 +49,21 @@ Util.imageTag = function(playerIndex, size) {
 }; // imageTag
 
 Util.playerTag = function(playerIndex) {
-  var element = $('<div>').addClass('player').html(Util.imageTag(playerIndex, 100)).attr({
+  var element = $('<div>').addClass('player clearfix').html(
+    Util.imageTag(playerIndex, 100)
+  ).attr({
     'data-player-index': playerIndex
   });
 
   // Name label and input
-  element.append($('<label>').attr({
+  var nameArea = $('<div class="input-area">');
+  element.append(nameArea);
+
+  nameArea.append($('<label>').attr({
     for: "player-" + playerIndex + "-name"
   }).html("Name:"));
-  element.append($('<input>').attr({
+
+  nameArea.append($('<input>').attr({
     type: "text",
     name: "player-" + playerIndex + "-name",
     id: "player-" + playerIndex + "-name",
@@ -66,10 +72,14 @@ Util.playerTag = function(playerIndex) {
   }));
 
   // Email label and input
-  element.append($('<label>').attr({
+  var emailArea = $('<div class="input-area">');
+  element.append(emailArea);
+
+  emailArea.append($('<label>').attr({
     for: "player-" + playerIndex + "-email"
   }).html("Email:"));
-  element.append($('<input>').attr({
+
+  emailArea.append($('<input>').attr({
     type: "text",
     name: "player-" + playerIndex + "-email",
     id: "player-" + playerIndex + "-email",

@@ -1,3 +1,5 @@
+/* General Styles */
+
 html {
   box-sizing: border-box;
 }
@@ -28,19 +30,16 @@ html {
   padding: 20px 0 0 0;
 }
 
-#game-setup {
-  display: none;
-  background-color: pink;
-  /*height: 400px;*/
-  /*width: 95%;*/
-  /*margin: 10px auto;*/
-  border: 10px solid linen;
-  padding: 10px;
+body {
+  font-family: 'Montserrat', sans-serif;
 }
 
-#play-button {
-  display: none;
+h1 {
+  text-align: center;
 }
+
+
+/* Info/Control Panel */
 
 .info-panel {
   background-color: maroon;
@@ -63,46 +62,26 @@ html {
 .info-panel li {
   list-style-type: none;
   display: inline-block;
-  margin: 10px;
-  padding: 10px;
+  margin-right: 10px;
+  padding: 20px 30px;
   text-align: center;
-}
-
-#board-wrapper {
-  max-width: 50%;
-  margin: 50px auto;
-}
-
-#game-board {
-  margin: 0 auto;
-}
-
-.square {
-  float:left;
-  text-align: center;
-  background-color: lightgray;
-  font-size: 3em;
-  font-weight: bold;
-  padding: 5px;
 }
 
 #controls li:hover {
   cursor: pointer;
   background-color: lightgray;
+  color: black;
 }
 
 #controls li {
   background-color: gray;
+  /*padding: 0 10px;*/
 }
 
 .player-image {
   border-radius: 100%;
 }
 
-.board-piece {
-  float: left;
-  width: 100%;
-}
 
 .player-name {
   text-align: center;
