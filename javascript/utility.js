@@ -35,13 +35,68 @@ Util.testSetup = function () {
   }); // each row
 }; // testSetup
 
-Util.imageTag = function(player, size) {
+Util.imageTag = function(playerIndex, size) {
   size = size || 200;
+  var email = game.players[playerIndex].email;
+  var url = 'http://www.gravatar.com/avatar/';
+  url += Util.hash(email) + '?s=' + size + '&r=pg';
 
-  var url = 'http://www.gravatar.com/avatar/' + Util.hash(game.players[player].email) + '?s=' + size + '&r=pg';
   return $('<img>').attr({
     src: url,
     alt: 'Player Image',
     class: 'player-image'
-  });
+  }).css('border', '5px solid ' + game.players[playerIndex].colour);
 }; // imageTag
+
+Util.playerTag = function(playerIndex) {
+  var element = $('<div>').addClass('player').html(Util.imageTag(playerIndex, 100)).attr({
+    'data-player-index': playerIndex
+  });
+
+  // Name label and input
+  element.append($('<label>').attr({
+    for: "player-" + playerIndex + "-name"
+  }).html("Name:"));
+  element.append($('<input>').attr({
+    type: "text",
+    name: "player-" + playerIndex + "-name",
+    id: "player-" + playerIndex + "-name",
+    class: "player-name",
+    value: game.players[playerIndex].name
+  }));
+
+  // Email label and input
+  element.append($('<label>').attr({
+    for: "player-" + playerIndex + "-email"
+  }).html("Email:"));
+  element.append($('<input>').attr({
+    type: "text",
+    name: "player-" + playerIndex + "-email",
+    id: "player-" + playerIndex + "-email",
+    class: "player-email",
+    value: game.players[playerIndex].email
+  }));
+
+  // Change colour button
+  element.append($('<button>').attr({
+    type: "button",
+    class: "change-colour-button"
+  }).html("Change Colour"));
+
+
+  // Remove button
+  element.append($('<button>').attr({
+    type: "button",
+    class: "remove-player-button"
+  }).html("Remove"));
+
+  return element;
+}; // playerTag
+
+Util.randomRGB = function () {
+  var r = Math.floor(Math.random() * 255);
+  var g = Math.floor(Math.random() * 255);
+  var b = Math.floor(Math.random() * 255);
+
+  return "rgb(" + r + ", " + g + ", " + b + ")";
+}; // randomRGB

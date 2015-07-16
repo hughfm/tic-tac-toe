@@ -31,15 +31,19 @@ html {
 #game-setup {
   display: none;
   background-color: pink;
-  height: 400px;
+  /*height: 400px;*/
+  /*width: 95%;*/
+  /*margin: 10px auto;*/
+  border: 10px solid linen;
+  padding: 10px;
 }
 
 .info-panel {
-  background-color: navy;
-  /*height: 50px;*/
+  background-color: maroon;
   color: white;
   padding: 10px;
   margin: 20px 0;
+  border: 10px solid linen;
 }
 
 .info-panel > * {

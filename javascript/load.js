@@ -32,6 +32,10 @@ $( document ).ready(function() {
         }); // each square on odd numbered rows
       }
 
+      gameInterface.updatePlayerList();
+    },
+
+    updatePlayerList : function() {
       // create players list
       var playersList = $('<ul>');
       _.each(game.players, function(player, playerIndex) {
@@ -58,7 +62,7 @@ $( document ).ready(function() {
       } );
 
       $('#players li').eq(game.turn).css( {
-        'background-color': 'lightblue',
+        'background-color': 'white',
         color: 'black'
       } );
     },
@@ -138,11 +142,13 @@ $( document ).ready(function() {
       $('#new-game').on('click', function() {
         gameInterface.init(3, [ {
           name: "Hugh",
-          email: "hughfmiddleton@gmail.com"
+          email: "hughfmiddleton@gmail.com",
+          colour: Util.randomRGB()
         },
         {
           name: "Cass",
-          email: "Cass.leigh.singh@gmail.com"
+          email: "Cass.leigh.singh@gmail.com",
+          colour: Util.randomRGB()
         } ]);
         game.saveLocal();
       });
@@ -161,7 +167,69 @@ $( document ).ready(function() {
         );
       });
 
-      $('#game-setup').append(Util.imageTag(0));
+      // populate player setup area
+      _.each(game.players, function(player, playerIndex) {
+        $('#add-player-button').before(
+          Util.playerTag(playerIndex)
+        );
+      });
+
+      // Add Player Event Handler
+      $('#add-player-button').on('click', function() {
+        if (game.players.length < 5) {
+          game.players.push({
+            name: "",
+            email: "",
+            colour: Util.randomRGB()
+          });
+          $('#add-player-button').before(
+            Util.playerTag(game.players.length - 1)
+          );
+          game.saveLocal();
+          gameInterface.updatePlayerList();
+          if (game.players.length >= 5) {
+            $(this).attr('disabled', true);
+          }
+        }
+      });
+
+      // Remove Player Event Handler
+      $('#player-setup').on('click', '.remove-player-button', function() {
+        var playerIndex = $( this ).parent().attr('data-player-index');
+        game.players.splice(playerIndex, 1);
+        $(this).parent().remove();
+        game.saveLocal();
+        gameInterface.updatePlayerList();
+        if (game.players.length < 5) {
+          $('#add-player-button').attr('disabled', false);
+        }
+      });
+
+      // Change Colour Event Handler
+      $('#player-setup').on('click', '.change-colour-button', function() {
+        var playerIndex = $( this ).parent().attr('data-player-index');
+        game.players[playerIndex].colour = Util.randomRGB();
+        $(this).parent().replaceWith(Util.playerTag(playerIndex));
+        game.saveLocal();
+        gameInterface.updatePlayerList();
+      });
+
+      // Change name event Handler
+      $('#player-setup').on('change', '.player-name', function() {
+        var playerIndex = $( this ).parent().attr('data-player-index');
+        game.players[playerIndex].name = $( this ).val();
+        game.saveLocal();
+      });
+
+      // Change email event Handler
+      $('#player-setup').on('change', '.player-email', function() {
+        var playerIndex = $( this ).parent().attr('data-player-index');
+        game.players[playerIndex].email = $( this ).val();
+        $(this).parent().replaceWith(Util.playerTag(playerIndex));
+        game.saveLocal();
+        gameInterface.updatePlayerList();
+      });
+
     }
 
   };
