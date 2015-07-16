@@ -45,6 +45,7 @@ html {
 .info-panel > * {
   display: inline-block;
   margin-left: 10px;
+  vertical-align: top;
 }
 
 .info-panel ul {
@@ -53,7 +54,7 @@ html {
 
 .info-panel li {
   list-style-type: none;
-  display: inline;
+  display: inline-block;
   margin: 10px;
   padding: 10px;
 }
@@ -73,6 +74,7 @@ html {
   background-color: lightgray;
   font-size: 3em;
   font-weight: bold;
+  padding: 10%;
 }
 
 #controls li:hover {
@@ -82,4 +84,13 @@ html {
 
 #controls li {
   background-color: gray;
+}
+
+.player-image {
+  border-radius: 100%;
+}
+
+.board-piece {
+  float: left;
+  width: 100%;
 }

@@ -34,8 +34,8 @@ $( document ).ready(function() {
 
       // create players list
       var playersList = $('<ul>');
-      _.each(game.players, function(player) {
-        playersList.append($('<li>').html(player));
+      _.each(game.players, function(player, playerIndex) {
+        playersList.append($('<li>').html(Util.imageTag(playerIndex, 50).addClass('player-list')));
       });
       $('#players').html(playersList.html());
 
@@ -45,7 +45,9 @@ $( document ).ready(function() {
     updateSquare : function(row, col) {
       $('.square').filter(function() {
         return parseInt($( this ).data('row'), 10) === row && parseInt($( this ).data('col'), 10) === col;
-      }).html(game.players[game.getSquare(row, col)]).attr('data-value', game.getSquare(row, col));
+      }).html(
+        Util.imageTag(game.getSquare(row, col)).addClass('board-piece')
+      ).attr('data-value', game.getSquare(row, col));
     },
 
     updateTurn : function() {
@@ -74,7 +76,6 @@ $( document ).ready(function() {
 
     clickSquare : function(row, col, playerIndex) {
       // console.log(row, col);
-      debugger;
       if (game.squareAvailable(row, col) && game.active) { // check if square is already taken & game is active
         // set and update square
         game.setSquare(row, col, playerIndex);
@@ -120,7 +121,7 @@ $( document ).ready(function() {
 
     load : function () {
       if (!window.localStorage.getItem('board')) {
-        gameInterface.init(4, ['C', 'H', 'X']); // initialize first game
+        gameInterface.init(4, []); // initialize first game
       } else {
         game.loadLocal();
         gameInterface.draw();
@@ -133,17 +134,34 @@ $( document ).ready(function() {
         gameInterface.bindSquareClick();
       }
 
+      // new game button
       $('#new-game').on('click', function() {
-        // function to start a new game
-        gameInterface.init(4, ['A', 'B']);
+        gameInterface.init(3, [ {
+          name: "Hugh",
+          email: "hughfmiddleton@gmail.com"
+        },
+        {
+          name: "Cass",
+          email: "Cass.leigh.singh@gmail.com"
+        } ]);
         game.saveLocal();
       });
 
+      // setup button
       $('#setup-button').on('click', function() {
         $('#board-wrapper').toggle();
         $('#game-setup').toggle();
         $(this).html( ($(this).html() === 'Setup') ? 'Play' : 'Setup' );
       });
+
+      // populate board size select box
+      _.each([3,4,5,6,7,8,9,10], function(size) {
+        $('#game-setup #board-size').append(
+          $('<option>').val(size).html(size + 'x' + size)
+        );
+      });
+
+      $('#game-setup').append(Util.imageTag(0));
     }
 
   };
