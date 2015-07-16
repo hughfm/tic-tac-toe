@@ -33,6 +33,8 @@ var game = {
     colour: Util.randomRGB()
   } ],
 
+  defaultHeading : "TIC TAC TOE",
+  
   nextPlayer : function () {
     if (game.turn >= game.players.length - 1) {
       game.turn = 0;

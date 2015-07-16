@@ -95,6 +95,7 @@ $( document ).ready(function() {
           game.active = false;
           gameInterface.updateWinLine(winStatus);
           game.saveLocal();
+          $('#main-heading').html(game.players[game.turn].name + " WINS!");
           return;
         }
 
@@ -128,7 +129,7 @@ $( document ).ready(function() {
       game.turn = 0; // set turn to first player
       // game.testSetup();
       gameInterface.draw(); // draw board on screen
-
+      $('#main-heading').html(game.defaultHeading);
       gameInterface.bindSquareClick();
       $('#board-size').val(size);
       game.active = true; // start the game!
@@ -160,7 +161,11 @@ $( document ).ready(function() {
         var winStatus = game.checkBoardForWins();
         if (winStatus) {
           gameInterface.updateWinLine(winStatus);
+          $('#main-heading').html(game.players[game.turn].name + " WINS!");
+        } else {
+          $('#main-heading').html(game.defaultHeading);
         }
+
         $('#board-size').val(game.board.length.toString());
         gameInterface.bindSquareClick();
       }
@@ -181,6 +186,7 @@ $( document ).ready(function() {
         $('#reset-button').hide();
         $('#new-game-button').hide();
         $('#play-button').css('display', 'inline-block');
+        $('#main-heading').html("GAME SETUP");
       });
 
       // Play Button
@@ -207,6 +213,9 @@ $( document ).ready(function() {
         var winStatus = game.checkBoardForWins();
         if (winStatus) {
           gameInterface.updateWinLine(winStatus);
+          $('#main-heading').html(game.players[game.turn].name + " WINS!");
+        } else {
+          $('#main-heading').html(game.defaultHeading);
         }
 
         gameInterface.bindSquareClick();
@@ -264,8 +273,7 @@ $( document ).ready(function() {
 
       // Change name event Handler
       $('#player-setup').on('change', '.player-name-input', function() {
-        console.log(100);
-        var playerIndex = $( this ).parent().attr('data-player-index');
+        var playerIndex = parseInt($( this ).closest('.player').attr('data-player-index'), 10);
         game.players[playerIndex].name = $( this ).val();
         game.saveLocal();
         gameInterface.updatePlayerList();
@@ -273,9 +281,9 @@ $( document ).ready(function() {
 
       // Change email event Handler
       $('#player-setup').on('change', '.player-email-input', function() {
-        var playerIndex = $( this ).parent().attr('data-player-index');
+        var playerIndex = parseInt($( this ).closest('.player').attr('data-player-index'), 10);
         game.players[playerIndex].email = $( this ).val();
-        $(this).parent().replaceWith(Util.playerTag(playerIndex));
+        $(this).parent().parent().replaceWith(Util.playerTag(playerIndex));
         game.saveLocal();
         gameInterface.updatePlayerList();
       });
