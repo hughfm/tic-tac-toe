@@ -74,4 +74,4 @@ The remaining logic is built on these basic functions to retrieve, set and compa
 
 ___
 
-Play the Game: https://github.com/hughfm/wdi-project-1
+Play the Game: https://hughfm.github.io/wdi-project-1
