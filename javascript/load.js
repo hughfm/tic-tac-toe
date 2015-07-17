@@ -124,6 +124,7 @@ $( document ).ready(function() {
 
     addPlayersToSetup : function() {
       // populate player setup area
+      gameInterface.gameSetup.find('.player').remove();
       _.each(game.players, function(player, playerIndex) {
         gameInterface.gameSetup.find('#add-player-button').before(
           Util.playerTag(playerIndex)
@@ -233,7 +234,7 @@ $( document ).ready(function() {
               email: "",
               colour: Util.randomRGB()
             });
-            $('#add-player-button').before(
+            gameInterface.gameSetup.find('#add-player-button').before(
               Util.playerTag(game.players.length - 1)
             );
             gameInterface.init(parseInt($('#board-size').val(), 10));
@@ -249,14 +250,16 @@ $( document ).ready(function() {
       removePlayer : function () {
         // Remove Player Event Handler
         $('#player-setup').on('click', '.remove-player-button', function() {
-          var playerIndex = $( this ).parent().attr('data-player-index');
-          game.players.splice(playerIndex, 1);
-          $(this).parent().remove();
-          gameInterface.init(parseInt($('#board-size').val(), 10));
-          game.saveLocal();
-          gameInterface.updatePlayerList();
-          if (game.players.length < 5) {
-            $('#add-player-button').attr('disabled', false);
+          if (game.players.length > 1) {
+            var playerIndex = $( this ).parent().attr('data-player-index');
+            game.players.splice(playerIndex, 1);
+            gameInterface.addPlayersToSetup();
+            gameInterface.init(parseInt($('#board-size').val(), 10));
+            game.saveLocal();
+            gameInterface.updatePlayerList();
+            if (game.players.length < 5) {
+              $('#add-player-button').attr('disabled', false);
+            }
           }
         });
       },
@@ -326,7 +329,7 @@ $( document ).ready(function() {
 
       gameInterface.addPlayersToSetup(); // add players to setup screen
 
-      // bind events
+      // bind events`
       gameInterface.events.squareClick();
       gameInterface.events.newGameClick();
       gameInterface.events.setupClick();
