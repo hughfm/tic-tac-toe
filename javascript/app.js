@@ -12,8 +12,7 @@ var gameDefaults = {
   } ],
 
   heading : "TIC TAC TOE"
-
-};
+}; // gameDefaults object
 
 var game = {
 
@@ -25,7 +24,6 @@ var game = {
   // game.board[i][j] returns the element in the jth column of the ith row
 
   board : [],
-
   players : JSON.parse(JSON.stringify(gameDefaults.players)),
   turn : 0,
   active : false,
@@ -36,16 +34,16 @@ var game = {
     } else {
       game.turn ++;
     }
-  },
+  }, // nextPlayer
 
   createBoard : function (size) {
-    // creates empty board of specified size
+    // creates empty board of specified size (square values are undefined)
     game.board = [];
 
     for (var i = 0; i < size; i++) {
       game.board[i] = Array(size);
     }
-  }, // setBoard
+  }, // createBoard
 
   getRow : function(row) {
     // return specified row as an array where rows begin at 1.
@@ -54,14 +52,16 @@ var game = {
 
   getCol : function (col) {
     // return specified column as an array where columns begin at 1.
-    if (col > game.board.length) {
+
+    // return undefined if an invalid column is passed - this is also how getRow behaves
+    if (col < 0 || col > game.board.length) {
       return;
     }
 
     var colArray = [];
 
-    _.each(game.board, function(row, i) {
-      colArray[i] = row[col - 1];
+    _.each(game.board, function(row, rowIndex) {
+      colArray[rowIndex] = row[col - 1];
     }); // each row
 
     return colArray;
@@ -76,26 +76,28 @@ var game = {
     return game.getSquare(row, col) === null || game.getSquare(row, col) === undefined;
   }, // squareAvailable
 
-  getDiag : function (origin) {
+  getDiag : function (direction) {
     // return diagonal starting at the top, as an array
     // can specify direction of diagonal: 'left' or 'right'
-    if (origin !== 'left' && origin !== 'right') {
+
+    // return undefined if invalid direction is passed
+    if (direction !== 'left' && direction !== 'right') {
       return;
     }
 
     var diagArray = [];
     var column;
 
-    if (origin === 'right') {
+    if (direction === 'right') {
       column = 0;
-      _.each(game.board, function(row, i) {
-        diagArray[i] = row[column];
+      _.each(game.board, function(row, rowIndex) {
+        diagArray[rowIndex] = row[column];
         column ++;
       }); // each row
-    } else if (origin === 'left') {
+    } else if (direction === 'left') {
       column = game.board.length - 1;
-      _.each(game.board, function(row, i) {
-        diagArray[i] = row[column];
+      _.each(game.board, function(row, rowIndex) {
+        diagArray[rowIndex] = row[column];
         column --;
       }); // each row
     }
@@ -104,11 +106,17 @@ var game = {
   }, // getDiag
 
   setSquare : function (row, col, playerIndex) {
+    // return undefined if an invalid playerIndex is passed
+    if (playerIndex < 0 || playerIndex > (game.players.length - 1)) {
+      return;
+    }
+
     game.board[row - 1][col - 1] = playerIndex;
+
     return playerIndex;
   }, // setSquare
 
-  renderBoard : function () {
+  renderBoardHTML : function () {
     var board = $('<div id="game-board" class="clearfix">');
     var squareContent;
 
@@ -119,6 +127,7 @@ var game = {
         } else {
           squareContent = null;
         }
+
         board.append($('<div>').attr({
           'data-row': rowIndex + 1,
           'data-col': colIndex + 1,
@@ -128,9 +137,13 @@ var game = {
     }); // each row
 
     return board;
-  }, // renderBoard
+  }, // renderBoardHTML
 
   getRefs : function (direction, reference) {
+    // function takes a direction and a reference, and returns an array of
+    // coordinates of a whole line for the purposes of manipulating DOM elements
+    // for example, on a 3x3 board, getRefs('row', 1) should return [ [1,1], [1,2], [1,3] ]
+
     var refs = [];
 
     if (direction === 'row') {
@@ -153,53 +166,71 @@ var game = {
         for (var rowCol = 1; rowCol <= game.board.length; rowCol++) {
           refs.push([rowCol, rowCol]);
         }
+
         return refs;
       }
     }
 
+    // if an invalid direction is passed, an empty array will be returned.
     return refs;
   }, // getRefs
 
   checkSquareForWins : function (row, col) {
+    // function checks a specific square for any wins associated with it
+    // returns coordinates of the win line, or false
+
+    // Check the row that the square is in
     if ( Util.allEqual(game.getRow(row)) ) {
       return game.getRefs('row', row);
     }
 
+    // Check the columm that the square is in
     if ( Util.allEqual(game.getCol(col)) ) {
       return game.getRefs('col', col);
     }
 
+    // If the square is in the 'right' diagonal, check that line
     if (row === col) {
       if ( Util.allEqual(game.getDiag('right')) ) {
         return game.getRefs('diag', 'right');
       }
     }
 
+    // If the square is in the 'left' diagonal, check that line
     if (row + col === game.board.length + 1) {
       if ( Util.allEqual(game.getDiag('left')) ) {
         return game.getRefs('diag', 'left');
       }
     }
+
+    // return false if no wins found
     return false;
   }, // checkSquareForWins
 
   checkBoardForWins : function () {
+    // function checks the whole board for wins
+    // returns coordinates of the win line, or false
+
+    // check all rows
     for (var row = 1; row <= game.board.length; row++) {
       if (Util.allEqual(game.getRow(row))) {
         return game.getRefs('row', row);
       }
     }
 
+    // check all columns
     for (var col = 1; col <= game.board.length; col++) {
       if (Util.allEqual(game.getCol(col))) {
         return game.getRefs('col', col);
       }
     }
 
+    // check right diagonal
     if (Util.allEqual(game.getDiag('right'))) {
       return game.getRefs('diag', 'right');
     }
 
+    // check left diagonal
     if (Util.allEqual(game.getDiag('left'))) {
       return game.getRefs('diag', 'left');
     }
@@ -217,7 +248,7 @@ var game = {
     window.localStorage.setItem('players', playersJSON);
     window.localStorage.setItem('turn', turnJSON);
     window.localStorage.setItem('active', activeJSON);
-  },
+  }, // saveLocal
 
   loadLocal : function () {
     var boardJSON = window.localStorage.getItem('board');
@@ -229,5 +260,6 @@ var game = {
     game.players = JSON.parse(playersJSON);
     game.turn = JSON.parse(turnJSON);
     game.active = JSON.parse(activeJSON);
-  }
+  } // loadLocal
+
 }; //game object
