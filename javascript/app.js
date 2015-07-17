@@ -1,4 +1,19 @@
 // Noughts & Crosses Game
+var gameDefaults = {
+  players : [ {
+    name: "Noughts",
+    email: "hughfmiddleton+noughts@gmail.com",
+    colour: Util.randomRGB()
+  },
+  {
+    name: "Crosses",
+    email: "hughfmiddleton+crosses@gmail.com",
+    colour: Util.randomRGB()
+  } ],
+
+  heading : "TIC TAC TOE"
+
+};
 
 var game = {
 
@@ -10,31 +25,11 @@ var game = {
   // game.board[i][j] returns the element in the jth column of the ith row
 
   board : [],
-  players : [ {
-    name: "Noughts",
-    email: "hughfmiddleton+noughts@gmail.com",
-    colour: Util.randomRGB()
-  },
-  {
-    name: "Crosses",
-    email: "hughfmiddleton+crosses@gmail.com",
-    colour: Util.randomRGB()
-  } ],
+
+  players : JSON.parse(JSON.stringify(gameDefaults.players)),
   turn : 0,
   active : false,
-  defaultPlayers : [ {
-    name: "Noughts",
-    email: "hughfmiddleton+noughts@gmail.com",
-    colour: Util.randomRGB()
-  },
-  {
-    name: "Crosses",
-    email: "hughfmiddleton+crosses@gmail.com",
-    colour: Util.randomRGB()
-  } ],
 
-  defaultHeading : "TIC TAC TOE",
-  
   nextPlayer : function () {
     if (game.turn >= game.players.length - 1) {
       game.turn = 0;

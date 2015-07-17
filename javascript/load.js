@@ -129,7 +129,7 @@ $( document ).ready(function() {
       game.turn = 0; // set turn to first player
       // game.testSetup();
       gameInterface.draw(); // draw board on screen
-      $('#main-heading').html(game.defaultHeading);
+      $('#main-heading').html(gameDefaults.heading);
       gameInterface.bindSquareClick();
       $('#board-size').val(size);
       game.active = true; // start the game!
@@ -163,7 +163,7 @@ $( document ).ready(function() {
           gameInterface.updateWinLine(winStatus);
           $('#main-heading').html(game.players[game.turn].name + " WINS!");
         } else {
-          $('#main-heading').html(game.defaultHeading);
+          $('#main-heading').html(gameDefaults.heading);
         }
 
         $('#board-size').val(game.board.length.toString());
@@ -215,7 +215,7 @@ $( document ).ready(function() {
           gameInterface.updateWinLine(winStatus);
           $('#main-heading').html(game.players[game.turn].name + " WINS!");
         } else {
-          $('#main-heading').html(game.defaultHeading);
+          $('#main-heading').html(gameDefaults.heading);
         }
 
         gameInterface.bindSquareClick();
@@ -224,7 +224,7 @@ $( document ).ready(function() {
       // Reset Button
       $('#reset-button').on('click', function() {
         window.localStorage.clear();
-        gameInterface.init(null, game.defaultPlayers);
+        gameInterface.init(null, JSON.parse(JSON.stringify(gameDefaults.players)));
         $('#player-setup .player').remove();
         gameInterface.addPlayersToSetup();
       });
