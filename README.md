@@ -70,4 +70,8 @@ The remaining logic is built on these basic functions to retrieve, set and compa
 - Rendering a grid of any size - individual div heights/widths needed to be calculated based on the current width of the browser window.
 - Placing restrictions on turn-taking, over-riding previous moves, making moves after the game finishes, etc.
 - Updating the board - when to redraw the entire game, when to update an individual square, etc.
-- Displaying win styling for a specific line of squares. 
+- Displaying win styling for a specific line of squares.
+
+___
+
+Play the Game: https://github.com/hughfm/wdi-project-1
