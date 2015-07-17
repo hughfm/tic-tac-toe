@@ -9,17 +9,18 @@ $( document ).ready(function() {
 
     drawBoard : function () {
       // draws the current state of the board on the screen
-
+      console.log(gameInterface.boardWrapper.css('width'));
       var squareSize = parseInt(gameInterface.boardWrapper.css('width'), 10) / game.board.length + 'px';
       var backgroundColours = ['lightgray', 'darkgray'];
 
       gameInterface.boardWrapper.html(game.renderBoardHTML);
 
       // set correct dimensions of every square
-      $('#game-board').children().css({
+      gameInterface.boardWrapper.find('.square').css({
         'width': squareSize,
         'height': squareSize,
       });
+      console.log(squareSize);
 
       // set background colours for checkerboard effect
       if (game.board.length % 2 !== 0) {
@@ -166,7 +167,7 @@ $( document ).ready(function() {
 
       newGameClick : function () {
         $('#new-game-button').on('click', function() {
-          gameInterface.init(parseInt($('#board-size').val(), 10));
+          gameInterface.init(parseInt(gameInterface.boardSizeSelect.val(), 10));
           game.saveLocal();
         });
       },
